@@ -3,12 +3,14 @@
 from functools import lru_cache
 from PIL import Image
 
-# Using u2net for much faster CPU inference (~5-10x faster than BRIA RMBG)
-# BRIA RMBG takes ~37s on CPU, u2net takes ~3-5s for same input
+# Using u2net for background removal (fast CPU inference).
 MODEL_NAME = "u2net"
 _rembg_failed = False
 
-# Optimal resolution for RMBG inference - balances speed and edge quality
+# Only the u2net rembg session is approved for this service.
+ALLOWED_BG_MODELS = ("u2net",)
+
+# Optimal resolution for background-removal inference - balances speed and edge quality
 # 768px provides good quality while being ~4x faster than 1600px on CPU
 RMBG_MAX_RESOLUTION = 768
 
@@ -16,6 +18,10 @@ RMBG_MAX_RESOLUTION = 768
 @lru_cache(maxsize=1)
 def _session():
     global _rembg_failed
+    if MODEL_NAME not in ALLOWED_BG_MODELS:
+        print(f"[BG Remover] unsupported background model: {MODEL_NAME}")
+        _rembg_failed = True
+        return None
     try:
         from rembg import new_session
         return new_session(MODEL_NAME)
