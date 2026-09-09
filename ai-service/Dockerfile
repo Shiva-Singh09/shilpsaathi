@@ -16,6 +16,9 @@ RUN python -c "from rembg import new_session; new_session('u2net')"
 
 COPY . .
 
+RUN ls -lh /root/.u2net/u2net.onnx && \
+    python -c "import os; print('U2NET EXISTS:', os.path.exists('/root/.u2net/u2net.onnx')); print('HOME:', os.environ.get('HOME'))"
+
 ENV PORT=8000
 EXPOSE 8000
 
