@@ -22,4 +22,4 @@ RUN ls -lh /root/.u2net/u2net.onnx && \
 ENV PORT=8000
 EXPOSE 8000
 
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+CMD ["sh", "-c", "echo '=== RUNTIME U2NET CHECK ==='; ls -lh /root/.u2net/u2net.onnx; python -c \"import os; print('RUNTIME U2NET EXISTS:', os.path.exists('/root/.u2net/u2net.onnx')); print('RUNTIME HOME:', os.environ.get('HOME'))\"; echo '=== STARTING SERVER ==='; uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]
