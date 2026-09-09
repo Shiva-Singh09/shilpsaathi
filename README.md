@@ -103,10 +103,10 @@ The Express server provides JSON APIs, multipart upload handling, validation, CO
 response helpers, Supabase access, and local startup of the Python AI service.
 
 `ai-service/processor.py` performs: resize to a maximum working edge of 1600;
-quality analysis; `rembg` background removal with the `bria-rmbg` session; alpha
+quality analysis; `rembg` background removal with the `u2net` session; alpha
 refinement and crop; product quality analysis; conditional skip/Lanczos/Real-ESRGAN
 enlargement; lighting correction; and composition on a white 1080x1080 canvas.
-The active pipeline does not use YOLO segmentation. The BRIA RMBG 2.0 weights are
+The active pipeline does not use YOLO segmentation. The U2Net weights are
 fetched by `rembg`; see `ai-service/AI-MODELS.md` for the license warning.
 
 ### Image Enhancement Service Details
@@ -137,7 +137,7 @@ Required image-model assets:
 | Asset | Location | Source behavior |
 | --- | --- | --- |
 | RealESRGAN x4plus | `ai-service/weights/RealESRGAN_x4plus.pth` | Bundled local weight used only when the crop needs substantial enlargement. |
-| BRIA RMBG 2.0 | rembg model cache | `rembg` may fetch it on first use; it is not bundled in this repository. |
+| U2Net | rembg model cache | `rembg` may fetch it on first use; it is not bundled in this repository. |
 
 Do not treat the Python package license as the model-weight license. Review
 `ai-service/AI-MODELS.md` before any commercial deployment or model replacement.
@@ -343,7 +343,7 @@ Vercel Hobby serverless deployment.
 | AI service unavailable | Open `http://localhost:8000/`, confirm the Python service is running, and check `AI_IMAGE_SERVICE_URL`. |
 | Missing Supabase storage | Confirm `SUPABASE_URL`, a server-side key, and the configured `product-images` bucket. |
 | Missing Real-ESRGAN weight | Confirm `ai-service/weights/RealESRGAN_x4plus.pth` exists. |
-| First enhancement is slow | `rembg` may initialize or fetch its BRIA model on first use; review the model licensing note before production use. |
+| First enhancement is slow | `rembg` may initialize or fetch its U2Net model on first use; review the model licensing note before production use. |
 | BasicSR/torchvision import error | Verify the installed Python environment and pinned requirements before changing dependency files. |
 | Frontend calls the wrong backend | Set `VITE_API_URL`, restart Vite, and use the Node API URL rather than calling FastAPI directly. |
 
